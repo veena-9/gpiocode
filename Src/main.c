@@ -22,37 +22,29 @@
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
-void set_mode(int,int *,int);
-void led_on(int,int *,int);
-void led_off(int,int *,int);
-void delay(int);
-
-
 int main(void)
 {
-	int RCC = 0x40023800;
-	int *RCC_ABH1ENR = (int *)(RCC + 0x30);
+	int *rcc = (int *)(RCC_AHB1ENR);
 
-	*RCC_ABH1ENR |= (1 << 0);
+	*rcc |= (1 << 0);
 
-	int GPIOA = 0X40020000;
-	int *GPIOA_MODE = (int *)(GPIOA + 0X00);
-	int *GPIOA_ODR = (int *)(GPIOA + 0x14);
+	int *gpio_mode = (int *)(GPIOA_MODE);
+	int *gpio_odr = (int *)(GPIOA_ODR);
 
-	set_mode(1,GPIOA_MODE,10);
+	set_mode(1,gpio_mode,10);
 
 	while(1)
 	{
-		led_on(1,GPIOA_ODR,5);
+		led_on(1,gpio_odr,5);
 		delay(5);
-		led_off(1,GPIOA_ODR,5);
+		led_off(1,gpio_odr,5);
 		delay(5);
 	}
 }
 
-void set_mode(int logic,int *GPIOA_MODE,int bit)
+void set_mode(int logic,int *mode,int bit)
 {
-	*GPIOA_MODE |= (logic << bit);
+	*mode |= (logic << bit);
 }
 
 void delay(int time)
@@ -65,12 +57,12 @@ void delay(int time)
 	}
 }
 
-void led_on(int logic,int *GPIOA_ODR,int bit)
+void led_on(int logic,int *odr,int bit)
 {
-	*GPIOA_ODR |= (logic << bit);
+	*odr |= (logic << bit);
 }
 
-void led_off(int logic,int *GPIOA_ODR,int bit)
+void led_off(int logic,int *odr,int bit)
 {
-	 *GPIOA_ODR &= ~(logic << bit);
+	 *odr &= ~(logic << bit);
 }
